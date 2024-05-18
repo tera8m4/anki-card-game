@@ -22,6 +22,8 @@
 ********************************************************************************************/
 
 #include "raylib.h"
+#include "Card.h"
+#include "models/CardModel.h"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -38,6 +40,10 @@ int main(void)
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
+    auto model = std::make_shared<CardModel>("text");
+    Card c;
+    c.setModel(model);
+
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -53,6 +59,8 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+
+            c.draw();
 
         EndDrawing();
         //----------------------------------------------------------------------------------

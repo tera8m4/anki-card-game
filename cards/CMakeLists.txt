@@ -18,10 +18,12 @@ CPMAddPackage(NAME raylib GITHUB_REPOSITORY raysan5/raylib GIT_TAG 5.0 OPTIONS "
 
 # ---- Create standalone executable ----
 
-file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp)
+file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/source/**/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp)
 
 add_executable(${PROJECT_NAME} ${sources})
-
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "cards")
-
 target_link_libraries(${PROJECT_NAME} raylib)
+
+target_include_directories(
+  ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+                         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
+)
