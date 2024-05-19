@@ -1,6 +1,8 @@
 #include "Card.h"
 #include "models/CardModel.h"
 #include "components/BaseButtonComponent.h"
+#include "ResourceManager.h"
+#include "components/TextComponent.h"
 
 
 namespace {
@@ -9,18 +11,26 @@ namespace {
 
 Card::Card()
 {
-	components.push_back(std::make_unique<BaseButtonComponent>(this));
+	components.push_back(std::make_shared<BaseButtonComponent>(this));
+	textComponent = std::make_shared<TextComponent>(this);
+	components.push_back(textComponent);
+
+	sceneComponents.push_back(textComponent);
 }
 
 
 void Card::setModel(const std::shared_ptr<CardModel>& inModel)
 {
 	model = inModel;
+
+	textComponent->setText(inModel->getText());
 }
 
 void Card::setPosition(const Vector2& inPosition)
 {
 	position = inPosition;
+	
+	textComponent->setPosition(position.x + 20, position.y + 20);
 }
 
 void Card::draw()
@@ -28,14 +38,9 @@ void Card::draw()
 	Rectangle rec{ position.x, position.y, CARD_SIZE.x, CARD_SIZE.y };
 	DrawRectangleRounded(rec, 0.2, 4, getCardColor());
 
-	auto ptr = model.lock();
-	if (ptr)
-	{
-		const bool isTextVisible = ptr->getIsFlipped() || ptr->getIsMatched();
-		if (isTextVisible) {
-			DrawText(ptr->getText().c_str(), position.x + 10, position.y + 10, 20, MAROON);
-		}
-	}	
+	for (auto& x : sceneComponents) {
+		x->draw();
+	}
 }
 
 Color Card::getCardColor() const

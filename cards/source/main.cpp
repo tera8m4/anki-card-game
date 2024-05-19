@@ -1,4 +1,4 @@
-﻿/*******************************************************************************************
+/*******************************************************************************************
 *
 *   raylib [core] example - Basic window
 *
@@ -26,7 +26,9 @@
 #include "models/CardModel.h"
 #include "ModelsRegistry.h"
 #include "controllers/CardsMatchController.h"
+#include "ResourceManager.h"
 
+#include <iostream>
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -42,11 +44,16 @@ int main(void)
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
-    auto model = std::make_shared<CardModel>("私");
+    ResourceManager::getInstance().loadFont("noto", "assets/NotoSansJP-Regular.ttf");
+
+    static const char* text = "私";
+
+    auto model = std::make_shared<CardModel>(std::string{ text });
 
     ModelsRegistry::getInstance().addCardModel(model);
 
 	auto c = std::make_shared<Card>();
+    c->setPosition({ 0.0f, 0.0f });
     CardsMatchController cardsController;    
     cardsController.addCard(c);
     

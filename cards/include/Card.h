@@ -5,6 +5,8 @@
 #include "components/Component.h"
 
 class CardModel;
+class SceneComponent;
+class TextComponent;
 
 class Card : public std::enable_shared_from_this<Card> {
 public:
@@ -29,7 +31,9 @@ public:
 private:
 	Vector2 position = { .x = 0, .y = 0 };
 	std::weak_ptr<const CardModel> model;
-	std::vector<std::unique_ptr<Component>> components;
+	std::vector<std::shared_ptr<Component>> components;
+	std::vector<std::shared_ptr<SceneComponent>> sceneComponents;
+	std::shared_ptr<TextComponent> textComponent;
 
 	Color getCardColor() const;
 };
