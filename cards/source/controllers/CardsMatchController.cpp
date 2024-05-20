@@ -20,13 +20,33 @@ void CardsMatchController::addCard(const std::shared_ptr<Card>& inCard)
 void CardsMatchController::onCardClicked(Card* inCard)
 {
 	std::shared_ptr<CardModel> model = getCardModel(inCard);
-	if (model)
-	{
+
+    if (!model)
+    {
+        return;
+    }
+
+    if (!clickedModel)
+    {
 		model->setIsFlipped(!model->getIsFlipped());
 
 		clickedModel = model;
 		lastClickTime = GetTime();
 	}
+    else
+    {
+        const std::string& matchingKey = model->getMatchingKey();
+        if (clickedModel->getKey() == matchingKey)
+        {
+            clickedModel->setIsMatched(true);
+            model->setIsMatched(true);
+        }
+        else {
+            clickedModel->setIsFlipped(false);
+            model->setIsFlipped(true);
+            clickedModel = model;
+        }
+    }
 }
 
 std::shared_ptr<CardModel> CardsMatchController::getCardModel(Card* inCard)

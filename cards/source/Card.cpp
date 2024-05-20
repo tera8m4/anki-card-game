@@ -45,10 +45,17 @@ void Card::draw()
 
 Color Card::getCardColor() const
 {
-	auto ptr = model.lock();
-	if (ptr && ptr->getIsFlipped()) {
-		return SKYBLUE;
-	}
+    auto ptr = model.lock();
+    if (!ptr)
+    {
+        return DARKBLUE;
+    }
+    if (ptr->getIsMatched()) {
+        return DARKPURPLE;
+    }
+    if (ptr->getIsFlipped()) {
+        return SKYBLUE;
+    }
 	return DARKBLUE;
 }
 
@@ -62,4 +69,7 @@ void Card::update()
 	for (auto& x : components) {
 		x->update();
 	}
+
+    auto ptr = model.lock();
+    textComponent->setVisibility(ptr && (ptr->getIsFlipped() || ptr->getIsMatched()));
 }

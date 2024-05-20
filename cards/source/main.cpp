@@ -46,16 +46,21 @@ int main(void)
 
     ResourceManager::getInstance().loadFont("noto", "assets/NotoSansJP-Regular.ttf");
 
-    static const char* text = "私";
+    auto model1 = std::make_shared<CardModel>("私", "key1", "key2");
+    auto model2 = std::make_shared<CardModel>("I", "key2", "key1");
 
-    auto model = std::make_shared<CardModel>(std::string{ text });
-
-    ModelsRegistry::getInstance().addCardModel(model);
+    ModelsRegistry::getInstance().addCardModel(model1);
+    ModelsRegistry::getInstance().addCardModel(model2);
 
 	auto c = std::make_shared<Card>();
     c->setPosition({ 0.0f, 0.0f });
+
+    auto c2 = std::make_shared<Card>();
+    c2->setPosition({ 150.0f, 0.0f });
+
     CardsMatchController cardsController;    
     cardsController.addCard(c);
+    cardsController.addCard(c2);
     
 
     // Main game loop
@@ -66,6 +71,7 @@ int main(void)
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
         c->update();
+        c2->update();
         cardsController.update();
 
         // Draw
@@ -77,6 +83,7 @@ int main(void)
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
             c->draw();
+            c2->draw();
 
         EndDrawing();
         //----------------------------------------------------------------------------------
