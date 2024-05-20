@@ -39,9 +39,36 @@ void TextComponent::setPosition(const float inX, const float inY)
 	y = inY;
 }
 
+void TextComponent::setWrapAt(const int inWrapAt) {
+    wrapAt = inWrapAt;
+}
+
 void TextComponent::draw()
 {
 	if (bIsVisible && text.length() > 0) {
-		DrawTextEx(*font.get(), text.c_str(), Vector2{ x, y }, 32, 2, LIME);
+        if (wrapAt > 0)
+        {
+            std::string wrappedText;
+            int lastSpace = 0;
+            for (int i = 0; i < text.size(); ++i) {
+                const char c = text[i];
+                wrappedText.push_back(c);
+
+                auto vec = MeasureTextEx(*font.get(), wrappedText.c_str(), 32, 2);
+                if (c == ' ') {
+                    lastSpace = i;
+                }
+                if (vec.x > wrapAt && lastSpace > 0) {
+                    wrappedText[lastSpace] = '\n';
+                    lastSpace = 0;
+                }
+            }
+            DrawTextEx(*font.get(), wrappedText.c_str(), Vector2{ x, y }, 32, 2, LIME);
+        }
+        else
+        {
+            DrawTextEx(*font.get(), text.c_str(), Vector2{ x, y }, 32, 2, LIME);
+        }
+        
 	}
 }

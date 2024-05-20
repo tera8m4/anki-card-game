@@ -6,7 +6,7 @@
 
 
 namespace {
-	Vector2 CARD_SIZE{ .x = 100, .y = 150 };
+	Vector2 CARD_SIZE{ .x = 200, .y = 300 };
 }
 
 Card::Card()
@@ -16,6 +16,7 @@ Card::Card()
 	components.push_back(textComponent);
 
 	sceneComponents.push_back(textComponent);
+    textComponent->setWrapAt(150);
 }
 
 

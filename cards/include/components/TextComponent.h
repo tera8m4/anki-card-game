@@ -21,12 +21,14 @@ public:
             bIsVisible = bInIsVisible;
         }
     }
+    void setWrapAt(const int inWrapAt);
 
 private:
 	std::string text;
 	std::unique_ptr<Font> font;
 	float x = 0;
 	float y = 0;
+    int wrapAt = 0;
     bool bIsVisible = true;
 
 	std::unique_ptr<Font> GenerateFont() const;

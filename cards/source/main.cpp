@@ -36,8 +36,8 @@ int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 1280;
+    const int screenHeight = 720;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
@@ -47,7 +47,7 @@ int main(void)
     ResourceManager::getInstance().loadFont("noto", "assets/NotoSansJP-Regular.ttf");
 
     auto model1 = std::make_shared<CardModel>("私", "key1", "key2");
-    auto model2 = std::make_shared<CardModel>("I", "key2", "key1");
+    auto model2 = std::make_shared<CardModel>("plastic umbrella", "key2", "key1");
 
     ModelsRegistry::getInstance().addCardModel(model1);
     ModelsRegistry::getInstance().addCardModel(model2);
@@ -56,7 +56,7 @@ int main(void)
     c->setPosition({ 0.0f, 0.0f });
 
     auto c2 = std::make_shared<Card>();
-    c2->setPosition({ 150.0f, 0.0f });
+    c2->setPosition({ 350.0f, 0.0f });
 
     CardsMatchController cardsController;    
     cardsController.addCard(c);
