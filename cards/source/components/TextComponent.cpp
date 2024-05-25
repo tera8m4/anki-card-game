@@ -1,5 +1,6 @@
 #include "components/TextComponent.h"
 #include <raylib.h>
+#include <spdlog/spdlog.h>
 
 void TextComponent::update()
 {
@@ -17,6 +18,8 @@ std::unique_ptr<Font> TextComponent::GenerateFont() const
 	UnloadCodepoints(codepoints);*/
 
 	std::unique_ptr<Font> font = std::make_unique<Font>(LoadFontEx("assets/NotoSansJP-Regular.otf", 32, codepoints, codepointCount));
+
+    spdlog::info("text: {} codepoints: {}", text, codepointCount);
 
 	free(codepoints);
 	return font;

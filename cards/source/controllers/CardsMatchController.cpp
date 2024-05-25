@@ -3,12 +3,19 @@
 #include "components/BaseButtonComponent.h"
 #include "models/CardModel.h"
 #include "ModelsRegistry.h"
+#include <random>
+
+CardsMatchController::CardsMatchController()
+{
+    availableModels = ModelsRegistry::getInstance().getCardModels();
+}
 
 void CardsMatchController::addCard(const std::shared_ptr<Card>& inCard)
 {
 	if (!inCard) { return; }
 
-	inCard->setModel(ModelsRegistry::getInstance().getModel(cards.size()));
+    
+	inCard->setModel(getRandomAvailableModel());
 	inCard->findComponent<BaseButtonComponent>()->onClickedCallback = [this](BaseButtonComponent* inButton)
 		{
 			onCardClicked(inButton->getOwner());
@@ -51,12 +58,11 @@ void CardsMatchController::onCardClicked(Card* inCard)
 
 std::shared_ptr<CardModel> CardsMatchController::getCardModel(Card* inCard)
 {
-	auto it = std::find(cards.begin(), cards.end(), inCard->shared_from_this());
-	if (it != cards.end()) {
-		const auto index = std::distance(cards.begin(), it);
-		return ModelsRegistry::getInstance().getModel(index);
-	}
-	return nullptr;
+    if (inCard)
+    {
+        return ModelsRegistry::getInstance().getModel(inCard->getModelKey());
+    }
+    return nullptr;
 }
 
 void CardsMatchController::update()
@@ -66,4 +72,23 @@ void CardsMatchController::update()
 		clickedModel->setIsFlipped(false);
 		clickedModel.reset();
 	}
+}
+
+std::shared_ptr<CardModel> CardsMatchController::getRandomAvailableModel()
+{
+    if (availableModels.empty()) {
+        return nullptr;
+    }
+
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, static_cast<int>(availableModels.size() - 1));
+
+    const int index = dist(rng);
+    auto model = availableModels[index];
+
+    swap(availableModels.back(), availableModels[index]);
+    availableModels.pop_back();
+
+    return model;
 }

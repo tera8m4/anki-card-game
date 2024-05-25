@@ -81,3 +81,9 @@ void ModelsRegistry::createFromCardInfos(const std::vector<CardInfo>& inCardInfo
     }
     
 }
+
+
+const std::vector<std::shared_ptr<CardModel>>& ModelsRegistry::getCardModels() const
+{
+    return cardModels;
+}

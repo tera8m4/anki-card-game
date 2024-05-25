@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include <memory>
 #include <vector>
+#include <string>
 #include "components/Component.h"
 
 class CardModel;
@@ -16,6 +17,7 @@ public:
 	void draw();
 	Rectangle getBoundsRect() const;
 	void update();
+    const std::string& getModelKey() const;
 
 	template<class T>
 	T* findComponent() {

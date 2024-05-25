@@ -74,3 +74,13 @@ void Card::update()
     auto ptr = model.lock();
     textComponent->setVisibility(ptr && (ptr->getIsFlipped() || ptr->getIsMatched()));
 }
+
+const std::string& Card::getModelKey() const
+{
+    static const std::string emptyKey;
+    auto ptr = model.lock();
+    if (ptr) {
+        return ptr->getKey();
+    }
+    return emptyKey;
+}
