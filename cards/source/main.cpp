@@ -27,13 +27,19 @@
 #include "ModelsRegistry.h"
 #include "controllers/CardsMatchController.h"
 #include "ResourceManager.h"
-
+#include "transport/Transport.h"
 #include <iostream>
+#include <ranges>
+#include <spdlog/spdlog.h>
+#include "utils.h"
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void)
 {
+    utils::enableUTF8();
+    //SetConsoleCodePage(CP_UTF8);
     // Initialization
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1280;
@@ -45,22 +51,36 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     ResourceManager::getInstance().loadFont("noto", "assets/NotoSansJP-Regular.ttf");
+    spdlog::info("よこそ");
 
-    auto model1 = std::make_shared<CardModel>("私", "key1", "key2");
-    auto model2 = std::make_shared<CardModel>("plastic umbrella", "key2", "key1");
+    auto allDueCards = Transport::getInstance().findDueCards();
+    auto tmpView = std::ranges::take_view(allDueCards, 6);
+    std::vector<unsigned long long> dueCards(tmpView.begin(), tmpView.end());
 
-    ModelsRegistry::getInstance().addCardModel(model1);
-    ModelsRegistry::getInstance().addCardModel(model2);
 
-	auto c = std::make_shared<Card>();
-    c->setPosition({ 0.0f, 0.0f });
+    std::cout << std::endl;
 
-    auto c2 = std::make_shared<Card>();
-    c2->setPosition({ 350.0f, 0.0f });
+    auto words = Transport::getInstance().getWords(dueCards);
+    const auto& cardInfos = Transport::getInstance().getCardInfo(words);
+    ModelsRegistry::getInstance().createFromCardInfos(cardInfos);
 
-    CardsMatchController cardsController;    
-    cardsController.addCard(c);
-    cardsController.addCard(c2);
+
+    std::vector<std::shared_ptr<Card>> cards;
+    CardsMatchController cardsController;
+
+    for (int i = 0; i < 6; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            cards.emplace_back(std::make_shared<Card>());
+            cards.back()->setPosition({ 210.0f * i + 10, j * 310.0f + 10 });
+            cardsController.addCard(cards.back());
+        }
+    }
+
+
+
+    //Transport::getInstance().init();
+
+
     
 
     // Main game loop
@@ -70,8 +90,10 @@ int main(void)
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
-        c->update();
-        c2->update();
+        for (auto& x : cards) {
+            x->update();
+        }
+
         cardsController.update();
 
         // Draw
@@ -80,10 +102,9 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-            c->draw();
-            c2->draw();
+            for (auto& x : cards) {
+                x->draw();
+            }
 
         EndDrawing();
         //----------------------------------------------------------------------------------
